@@ -1,57 +1,106 @@
 /* global __dirname, require, module*/
 
-const webpack = require('webpack');
-const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 const path = require('path');
-const env = require('yargs').argv.env; // use --env with webpack 2
+const TerserPlugin = require('terser-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
-let libraryName = 'Autocompleter';
+module.exports = (env, argv) => {
+  const isProduction = argv.mode === 'production';
 
-let plugins = [], outputFile;
-
-if (env === 'build') {
-  plugins.push(new UglifyJsPlugin({ minimize: true, mangle: false }));
-  outputFile = libraryName + '.min.js';
-} else {
-  outputFile = libraryName + '.js';
-}
-
-const config = {
-  entry: __dirname + '/src/Autocompleter.js',
-  devtool: 'source-map',
-  // target: 'node',
-  output: {
-    path: __dirname + '/lib',
-    filename: outputFile,
-    library: libraryName,
-    libraryTarget: 'umd',
-    umdNamedDefine: true
-  },
-  module: {
-    rules: [
-      {
-        test: /(\.jsx|\.js)$/,
-        loader: 'babel-loader',
-        exclude: /(node_modules|bower_components)/
-      }
-    ]
-  },
-  resolve: {
-    modules: [path.resolve('./node_modules'), path.resolve('./src')],
-    extensions: ['.json', '.js']
-  },
-  externals: [
-    {
-      'isomorphic-fetch': {
-        root: 'isomorphic-fetch',
-        commonjs2: 'isomorphic-fetch',
-        commonjs: 'isomorphic-fetch',
-        amd: 'isomorphic-fetch'
+  return {
+    entry: './src/Autocompleter.ts',
+    target: ['web', 'es2020'],
+    mode: isProduction ? 'production' : 'development',
+    devtool: isProduction ? 'source-map' : 'eval-source-map',
+    output: {
+      path: path.resolve(__dirname, 'dist'),
+      filename: isProduction ? 'Autocompleter.min.js' : 'Autocompleter.js',
+      library: {
+        name: 'Autocompleter',
+        type: 'umd',
+        export: 'default',
+        umdNamedDefine: true
       },
-      "@usig-gcba/normalizador" : "@usig-gcba/normalizador"
+      globalObject: 'this'
+    },
+    resolve: {
+      extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+      alias: {
+        '@': path.resolve(__dirname, 'src')
+      }
+    },
+    module: {
+      rules: [
+        {
+          test: /\.(ts|tsx)$/,
+          exclude: /node_modules/,
+          use: [
+            {
+              loader: 'ts-loader',
+              options: {
+                transpileOnly: true,
+                configFile: path.resolve(__dirname, 'tsconfig.json')
+              }
+            }
+          ]
+        }
+      ]
+    },
+    optimization: {
+      minimize: isProduction,
+      minimizer: [
+        new TerserPlugin({
+          terserOptions: {
+            format: {
+              comments: false
+            },
+            compress: {
+              drop_console: isProduction,
+              drop_debugger: isProduction
+            }
+          },
+          extractComments: false
+        })
+      ]
+    },
+    plugins: [
+      new CleanWebpackPlugin({
+        cleanOnceBeforeBuildPatterns: ['dist/**/*']
+      }),
+      new ForkTsCheckerWebpackPlugin({
+        typescript: {
+          configFile: path.resolve(__dirname, 'tsconfig.json'),
+          memoryLimit: 4096,
+          mode: 'write-references'
+        }
+      })
+    ],
+    devServer: {
+      static: {
+        directory: path.join(__dirname, 'demo')
+      },
+      compress: true,
+      port: 9000,
+      hot: true,
+      open: true,
+      client: {
+        overlay: {
+          errors: true,
+          warnings: false
+        }
+      }
+    },
+    performance: {
+      hints: isProduction ? 'warning' : false,
+      maxEntrypointSize: 512000,
+      maxAssetSize: 512000
+    },
+    stats: {
+      colors: true,
+      modules: true,
+      reasons: true,
+      errorDetails: true
     }
-  ],
-  plugins: plugins
+  };
 };
-
-module.exports = config;
