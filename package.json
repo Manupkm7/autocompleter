@@ -24,15 +24,12 @@
   "author": "GCBA",
   "license": "MIT",
   "dependencies": {
-    "@usig-gcba/normalizador": "^1.0.0"
+    "gcba-normalizador-typescript": "^2.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.15.21",
     "@types/urijs": "^1.19.25",
     "rimraf": "^5.0.5",
     "typescript": "^5.0.0"
-  },
-  "peerDependencies": {
-    "@usig-gcba/normalizador": "^1.0.0"
   }
 }

@@ -1,5 +1,5 @@
 import { Suggester } from './Suggester';
-import { Normalizador, NormalizadorOptions } from '@usig-gcba/normalizador';
+import { NormalizerOptions, Normalizador } from 'gcba-normalizador-typescript';
 interface DireccionSuggestion {
     title: string;
     subTitle: string;
@@ -33,7 +33,7 @@ interface DireccionOptions {
     acceptSN: boolean;
     callesEnMinusculas: boolean;
     ignorarTextoSobrante: boolean;
-    normalizadorDirecciones?: new (options: NormalizadorOptions) => Normalizador;
+    normalizadorDirecciones?: new (options: NormalizerOptions) => Normalizador;
     afterAbort?: () => void;
     afterRetry?: () => void;
     afterServerRequest?: () => void;

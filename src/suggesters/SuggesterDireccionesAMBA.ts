@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Suggester } from './Suggester';
-import { NormalizadorAMBA } from '@usig-gcba/normalizador';
+import { NormalizadorAMBA } from 'gcba-normalizador-typescript';
 import { usig_webservice_url } from '../config';
 
 interface DireccionSuggestion {

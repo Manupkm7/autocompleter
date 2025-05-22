@@ -6,7 +6,7 @@ exports.SuggesterDireccionesAMBA = void 0;
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 const Suggester_1 = require("./Suggester");
-const normalizador_1 = require("@usig-gcba/normalizador");
+const gcba_normalizador_typescript_1 = require("gcba-normalizador-typescript");
 const config_1 = require("../config");
 const defaults = {
     debug: false,
@@ -30,7 +30,7 @@ class SuggesterDireccionesAMBA extends Suggester_1.Suggester {
             },
         };
         super(name, mergedOptions);
-        this.normalizadorAMBA = options.normalizadorAMBA || normalizador_1.NormalizadorAMBA.init({});
+        this.normalizadorAMBA = options.normalizadorAMBA || gcba_normalizador_typescript_1.NormalizadorAMBA.init({});
         this.lastRequest = null;
     }
     async getLatLng2(lugar) {

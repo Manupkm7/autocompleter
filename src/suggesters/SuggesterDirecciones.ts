@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Suggester } from './Suggester';
-import { DireccionNormalizada, Normalizador, NormalizadorOptions } from '@usig-gcba/normalizador';
+import { NormalizerOptions, Normalizador, Direccion } from 'gcba-normalizador-typescript';
 import { usig_webservice_url, catastro_webservice_url } from '../config';
 
 interface DireccionSuggestion {
@@ -41,7 +41,7 @@ interface DireccionOptions {
   acceptSN: boolean;
   callesEnMinusculas: boolean;
   ignorarTextoSobrante: boolean;
-  normalizadorDirecciones?: new (options: NormalizadorOptions) => Normalizador;
+  normalizadorDirecciones?: new (options: NormalizerOptions) => Normalizador;
   afterAbort?: () => void;
   afterRetry?: () => void;
   afterServerRequest?: () => void;
@@ -70,10 +70,10 @@ const defaults: DireccionOptions = {
   maxSuggestions: 10,
   acceptSN: true,
   callesEnMinusculas: true,
-  ignorarTextoSobrante: false,
+  ignorarTextoSobrante: false
 };
 
-const convertToDireccionSuggestion = (d: DireccionNormalizada): DireccionSuggestion => ({
+const convertToDireccionSuggestion = (d: Direccion): DireccionSuggestion => ({
   title: d.nombre,
   subTitle: 'CABA',
   type: d.tipo,
@@ -85,10 +85,10 @@ const convertToDireccionSuggestion = (d: DireccionNormalizada): DireccionSuggest
       ? {
           x: parseFloat(d.coordenadas.x),
           y: parseFloat(d.coordenadas.y),
-          srid: d.coordenadas.srid,
+          srid: d.coordenadas.srid
         }
-      : undefined,
-  },
+      : undefined
+  }
 });
 
 export class SuggesterDirecciones extends Suggester {
@@ -98,7 +98,7 @@ export class SuggesterDirecciones extends Suggester {
   constructor(name: string, options: Partial<DireccionOptions> = {}) {
     const mergedOptions = {
       ...defaults,
-      ...options,
+      ...options
     };
 
     super(name, mergedOptions);
@@ -115,13 +115,15 @@ export class SuggesterDirecciones extends Suggester {
   private async getLatLng2(lugar: DireccionData): Promise<Coordenadas | undefined> {
     try {
       const response = await fetch(
-        `${usig_webservice_url}/normalizar/?direccion=${encodeURIComponent(lugar.nombre)},${encodeURIComponent(lugar.descripcion)}&geocodificar=true&srid=4326`,
+        `${usig_webservice_url}/normalizar/?direccion=${encodeURIComponent(
+          lugar.nombre
+        )},${encodeURIComponent(lugar.descripcion)}&geocodificar=true&srid=4326`,
         {
           signal: this.lastRequest?.signal,
           headers: {
-            Accept: 'application/json',
-          },
-        },
+            Accept: 'application/json'
+          }
+        }
       );
 
       if (!response.ok) {
@@ -135,7 +137,7 @@ export class SuggesterDirecciones extends Suggester {
         return {
           x: parseFloat(coords.x),
           y: parseFloat(coords.y),
-          srid: coords.srid,
+          srid: coords.srid
         };
       }
       return undefined;
@@ -157,13 +159,15 @@ export class SuggesterDirecciones extends Suggester {
       }
 
       const response = await fetch(
-        `${catastro_webservice_url}/parcela/?codigo_calle=${encodeURIComponent(codigo)}&altura=${encodeURIComponent(lugar.altura)}&geocodificar=true&srid=4326`,
+        `${catastro_webservice_url}/parcela/?codigo_calle=${encodeURIComponent(
+          codigo
+        )}&altura=${encodeURIComponent(lugar.altura)}&geocodificar=true&srid=4326`,
         {
           signal: this.lastRequest?.signal,
           headers: {
-            Accept: 'application/json',
-          },
-        },
+            Accept: 'application/json'
+          }
+        }
       );
 
       if (!response.ok) {
@@ -185,7 +189,7 @@ export class SuggesterDirecciones extends Suggester {
   async getSuggestions(
     text: string,
     callback: (suggestions: DireccionSuggestion[], text: string, suggesterName: string) => void,
-    maxSuggestions?: number,
+    maxSuggestions?: number
   ): Promise<void> {
     if (this.options.debug) {
       console.log(`SuggesterDirecciones.getSuggestions('${text}')`);
@@ -203,11 +207,11 @@ export class SuggesterDirecciones extends Suggester {
       const dirs = this.normalizadorDirecciones.normalizar(text, maxSug);
 
       const suggestions = await Promise.all(
-        dirs.map(async (d) => {
+        dirs.map(async (d: any) => {
           const suggestion = convertToDireccionSuggestion(d);
           const [coordenadas, smp] = await Promise.all([
             this.getLatLng2(suggestion.data),
-            this.getLatLng3(suggestion.data),
+            this.getLatLng3(suggestion.data)
           ]);
           if (coordenadas) {
             suggestion.data.coordenadas = coordenadas;
@@ -216,7 +220,7 @@ export class SuggesterDirecciones extends Suggester {
             suggestion.data.smp = smp;
           }
           return suggestion;
-        }),
+        })
       );
 
       callback(suggestions, text, this.name);
@@ -264,7 +268,7 @@ export class SuggesterDirecciones extends Suggester {
   setOptions(options: Partial<DireccionOptions>): void {
     const mergedOptions = {
       ...this.options,
-      ...options,
+      ...options
     };
     super.setOptions(mergedOptions);
   }

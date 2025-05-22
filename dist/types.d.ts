@@ -1,5 +1,5 @@
-import { NormalizadorOptions, DireccionNormalizada } from '@usig-gcba/normalizador';
-export interface SuggesterOptions extends NormalizadorOptions {
+import { NormalizerOptions, Direccion } from 'gcba-normalizador-typescript';
+export interface SuggesterOptions extends NormalizerOptions {
     inputPause: number;
     maxSuggestions: number;
     serverTimeout: number;
@@ -47,7 +47,7 @@ export interface AutocompleterCallbacks {
 }
 export interface Suggestion {
     suggesterName: string;
-    data: DireccionNormalizada;
+    data: Direccion;
 }
 export interface GlobalState {
     currentText: string;
