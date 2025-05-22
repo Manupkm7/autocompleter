@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Autocompleter = void 0;
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 const config_1 = require("./config");
 const types_1 = require("./types");
+const SuggesterLugares_1 = require("./suggesters/SuggesterLugares");
+const SuggesterDirecciones_1 = require("./suggesters/SuggesterDirecciones");
+const SuggesterDireccionesAMBA_1 = require("./suggesters/SuggesterDireccionesAMBA");
+const SuggesterDeficitHabitacional_1 = require("./suggesters/SuggesterDeficitHabitacional");
+const SuggesterCatastro_1 = require("./suggesters/SuggesterCatastro");
 const defaultOptions = {
     inputPause: 200,
     maxSuggestions: 10,
@@ -18,27 +19,27 @@ const defaultOptions = {
         {
             name: 'Direcciones',
             options: { inputPause: 300, minTextLength: 3 },
-            class: require('./suggesters/SuggesterDirecciones').default,
+            class: SuggesterDirecciones_1.SuggesterDirecciones,
         },
         {
             name: 'Lugares',
             options: { inputPause: 500, minTextLength: 3 },
-            class: require('./suggesters/SuggesterLugares').default,
+            class: SuggesterLugares_1.SuggesterLugares,
         },
         {
             name: 'DireccionesAMBA',
             options: { inputPause: 500, minTextLength: 3 },
-            class: require('./suggesters/SuggesterDireccionesAMBA').default,
+            class: SuggesterDireccionesAMBA_1.SuggesterDireccionesAMBA,
         },
         {
             name: 'DeficitHabitacional',
             options: { inputPause: 500, minTextLength: 3 },
-            class: require('./suggesters/SuggesterDeficitHabitacional').default,
+            class: SuggesterDeficitHabitacional_1.SuggesterDeficitHabitacional,
         },
         {
             name: 'Catastro',
             options: { inputPause: 500, minTextLength: 3 },
-            class: require('./suggesters/SuggesterCatastro').default,
+            class: SuggesterCatastro_1.SuggesterCatastro,
         },
     ],
     debug: false,

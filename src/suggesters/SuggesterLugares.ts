@@ -50,10 +50,10 @@ interface LugarOptions {
   maxSuggestions: number;
   server: string;
   searchOptions: SearchOptions;
-  afterAbort?: () => void;
-  afterRetry?: () => void;
-  afterServerRequest?: () => void;
-  afterServerResponse?: () => void;
+  afterAbort?: (suggesterName: string) => void;
+  afterRetry?: (suggesterName: string) => void;
+  afterServerRequest?: (suggesterName: string) => void;
+  afterServerResponse?: (suggesterName: string) => void;
   onReady?: () => void;
 }
 
@@ -91,7 +91,7 @@ const defaults: LugarOptions = {
 };
 
 export class SuggesterLugares extends Suggester {
-  private lastRequest: AbortController | null;
+  private lastRequest: AbortController | undefined;
 
   constructor(name: string, options: Partial<LugarOptions> = {}) {
     const mergedOptions = {
@@ -104,7 +104,7 @@ export class SuggesterLugares extends Suggester {
     };
 
     super(name, mergedOptions);
-    this.lastRequest = null;
+    this.lastRequest = undefined;
   }
 
   private async getLatLng2(lugar: LugarData): Promise<Coordenadas | undefined> {
@@ -215,15 +215,15 @@ export class SuggesterLugares extends Suggester {
         callback([error as LugarSuggestion], text, this.name);
       }
     } finally {
-      this.lastRequest = null;
+      this.lastRequest = undefined;
     }
   }
 
   abort(): void {
     if (this.lastRequest) {
       this.lastRequest.abort();
-      this.lastRequest = null;
-      this.options.afterAbort?.();
+      this.lastRequest = undefined;
+      this.options.afterAbort?.(this.name);
     }
   }
 

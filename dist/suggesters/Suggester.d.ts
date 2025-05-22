@@ -1,11 +1,17 @@
+import { SuggesterStatus } from '../types';
 interface SuggesterOptions {
     ignorarTextoSobrante: any;
     searchOptions: any;
-    afterAbort: () => unknown;
+    afterAbort: (suggesterName: string) => void;
+    afterRetry: (suggesterName: string) => void;
+    afterServerRequest: (suggesterName: string) => void;
+    afterServerResponse: (suggesterName: string) => void;
     debug: boolean;
     serverTimeout: number;
     maxRetries: number;
     maxSuggestions: number;
+    inputPause: number;
+    minTextLength: number;
 }
 interface Suggestion {
     [key: string]: any;
@@ -18,11 +24,11 @@ export declare class GeoCodingTypeError extends Error {
     constructor();
 }
 export declare abstract class Suggester {
-    protected name: string;
-    protected options: SuggesterOptions;
-    protected status: 'done' | 'pending' | 'error';
-    protected inputTimer: NodeJS.Timeout | null;
-    protected suggestionsPromises: Map<Suggestion, Promise<any>[]>;
+    name: string;
+    options: SuggesterOptions;
+    status: SuggesterStatus;
+    inputTimer: NodeJS.Timeout | undefined;
+    suggestionsPromises: Map<Suggestion, Promise<any>[]>;
     constructor(name: string, options?: Partial<SuggesterOptions>);
     /**
      * Retorna un array de promises del suggestion recibido como parámetro

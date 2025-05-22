@@ -102,7 +102,7 @@ class SuggesterDeficitHabitacional extends Suggester_1.Suggester {
         if (this.lastRequest) {
             this.lastRequest.abort();
             this.lastRequest = null;
-            (_b = (_a = this.options).afterAbort) === null || _b === void 0 ? void 0 : _b.call(_a);
+            (_b = (_a = this.options).afterAbort) === null || _b === void 0 ? void 0 : _b.call(_a, this.name);
         }
     }
     ready() {

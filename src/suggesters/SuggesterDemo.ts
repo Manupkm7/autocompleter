@@ -146,7 +146,6 @@ export class SuggesterDemo extends Suggester {
     if (this.lastRequest) {
       this.lastRequest.abort();
       this.lastRequest = null;
-      this.options.afterAbort?.();
     }
   }
 

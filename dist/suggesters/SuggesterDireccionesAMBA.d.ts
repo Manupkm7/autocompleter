@@ -30,10 +30,10 @@ interface DireccionAMBAOptions {
         callesEnMinusculas?: boolean;
         ignorarTextoSobrante?: boolean;
     };
-    afterAbort?: () => void;
-    afterRetry?: () => void;
-    afterServerRequest?: () => void;
-    afterServerResponse?: () => void;
+    afterAbort?: (suggesterName: string) => void;
+    afterRetry?: (suggesterName: string) => void;
+    afterServerRequest?: (suggesterName: string) => void;
+    afterServerResponse?: (suggesterName: string) => void;
     onReady?: () => void;
 }
 export declare class SuggesterDireccionesAMBA extends Suggester {

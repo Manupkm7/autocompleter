@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { usig_webservice_url } from './config';
 import {
   AutocompleterOptions,
@@ -13,6 +9,11 @@ import {
   GlobalState,
   SuggesterOptions,
 } from './types';
+import { SuggesterLugares } from './suggesters/SuggesterLugares';
+import { SuggesterDirecciones } from './suggesters/SuggesterDirecciones';
+import { SuggesterDireccionesAMBA } from './suggesters/SuggesterDireccionesAMBA';
+import { SuggesterDeficitHabitacional } from './suggesters/SuggesterDeficitHabitacional';
+import { SuggesterCatastro } from './suggesters/SuggesterCatastro';
 
 const defaultOptions: AutocompleterOptions = {
   inputPause: 200,
@@ -25,27 +26,27 @@ const defaultOptions: AutocompleterOptions = {
     {
       name: 'Direcciones',
       options: { inputPause: 300, minTextLength: 3 },
-      class: require('./suggesters/SuggesterDirecciones').default,
+      class: SuggesterDirecciones,
     },
     {
       name: 'Lugares',
       options: { inputPause: 500, minTextLength: 3 },
-      class: require('./suggesters/SuggesterLugares').default,
+      class: SuggesterLugares,
     },
     {
       name: 'DireccionesAMBA',
       options: { inputPause: 500, minTextLength: 3 },
-      class: require('./suggesters/SuggesterDireccionesAMBA').default,
+      class: SuggesterDireccionesAMBA,
     },
     {
       name: 'DeficitHabitacional',
       options: { inputPause: 500, minTextLength: 3 },
-      class: require('./suggesters/SuggesterDeficitHabitacional').default,
+      class: SuggesterDeficitHabitacional,
     },
     {
       name: 'Catastro',
       options: { inputPause: 500, minTextLength: 3 },
-      class: require('./suggesters/SuggesterCatastro').default,
+      class: SuggesterCatastro,
     },
   ],
   debug: false,

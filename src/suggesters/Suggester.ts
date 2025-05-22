@@ -1,11 +1,18 @@
+import { SuggesterStatus } from '../types';
+
 interface SuggesterOptions {
   ignorarTextoSobrante: any;
   searchOptions: any;
-  afterAbort: () => unknown;
+  afterAbort: (suggesterName: string) => void;
+  afterRetry: (suggesterName: string) => void;
+  afterServerRequest: (suggesterName: string) => void;
+  afterServerResponse: (suggesterName: string) => void;
   debug: boolean;
   serverTimeout: number;
   maxRetries: number;
   maxSuggestions: number;
+  inputPause: number;
+  minTextLength: number;
 }
 
 interface Suggestion {
@@ -15,13 +22,18 @@ interface Suggestion {
 type SuggestionCallback = (suggestions: Suggestion[]) => void;
 
 const defaults: SuggesterOptions = {
-  afterAbort: () => {},
+  afterAbort: (_suggesterName: string) => {},
+  afterRetry: (_suggesterName: string) => {},
+  afterServerRequest: (_suggesterName: string) => {},
+  afterServerResponse: (_suggesterName: string) => {},
   ignorarTextoSobrante: false,
   debug: false,
   serverTimeout: 15000,
   maxRetries: 5,
   maxSuggestions: 10,
   searchOptions: undefined,
+  inputPause: 200,
+  minTextLength: 3
 };
 
 const suggestionsPromises: Map<Suggestion, Promise<any>[]> = new Map();
@@ -41,17 +53,17 @@ export class GeoCodingTypeError extends Error {
 }
 
 export abstract class Suggester {
-  protected name: string;
-  protected options: SuggesterOptions;
-  protected status: 'done' | 'pending' | 'error';
-  protected inputTimer: NodeJS.Timeout | null;
-  protected suggestionsPromises: Map<Suggestion, Promise<any>[]>;
+  public name: string;
+  public options: SuggesterOptions;
+  public status: SuggesterStatus;
+  public inputTimer: NodeJS.Timeout | undefined;
+  public suggestionsPromises: Map<Suggestion, Promise<any>[]>;
 
   constructor(name: string, options: Partial<SuggesterOptions> = {}) {
     this.name = name;
     this.options = { ...defaults, ...options };
-    this.status = 'done';
-    this.inputTimer = null;
+    this.status = SuggesterStatus.DONE;
+    this.inputTimer = undefined;
     this.suggestionsPromises = suggestionsPromises;
   }
 

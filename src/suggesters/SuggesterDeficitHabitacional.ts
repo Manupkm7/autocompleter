@@ -33,10 +33,10 @@ interface DeficitOptions {
   serverTimeout: number;
   maxRetries: number;
   maxSuggestions: number;
-  afterAbort?: () => void;
-  afterRetry?: () => void;
-  afterServerRequest?: () => void;
-  afterServerResponse?: () => void;
+  afterAbort?: (suggesterName: string) => void;
+  afterRetry?: (suggesterName: string) => void;
+  afterServerRequest?: (suggesterName: string) => void;
+  afterServerResponse?: (suggesterName: string) => void;
   onReady?: () => void;
 }
 
@@ -168,7 +168,7 @@ export class SuggesterDeficitHabitacional extends Suggester {
     if (this.lastRequest) {
       this.lastRequest.abort();
       this.lastRequest = null;
-      this.options.afterAbort?.();
+      this.options.afterAbort?.(this.name);
     }
   }
 

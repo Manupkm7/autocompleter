@@ -41,7 +41,7 @@ class SuggesterLugares extends Suggester_1.Suggester {
             },
         };
         super(name, mergedOptions);
-        this.lastRequest = null;
+        this.lastRequest = undefined;
     }
     async getLatLng2(lugar) {
         var _a, _b;
@@ -135,15 +135,15 @@ class SuggesterLugares extends Suggester_1.Suggester {
             }
         }
         finally {
-            this.lastRequest = null;
+            this.lastRequest = undefined;
         }
     }
     abort() {
         var _a, _b;
         if (this.lastRequest) {
             this.lastRequest.abort();
-            this.lastRequest = null;
-            (_b = (_a = this.options).afterAbort) === null || _b === void 0 ? void 0 : _b.call(_a);
+            this.lastRequest = undefined;
+            (_b = (_a = this.options).afterAbort) === null || _b === void 0 ? void 0 : _b.call(_a, this.name);
         }
     }
     ready() {

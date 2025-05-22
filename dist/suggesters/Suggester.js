@@ -1,14 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Suggester = exports.GeoCodingTypeError = exports.MethodNotImplemented = void 0;
+const types_1 = require("../types");
 const defaults = {
-    afterAbort: () => { },
+    afterAbort: (_suggesterName) => { },
+    afterRetry: (_suggesterName) => { },
+    afterServerRequest: (_suggesterName) => { },
+    afterServerResponse: (_suggesterName) => { },
     ignorarTextoSobrante: false,
     debug: false,
     serverTimeout: 15000,
     maxRetries: 5,
     maxSuggestions: 10,
     searchOptions: undefined,
+    inputPause: 200,
+    minTextLength: 3
 };
 const suggestionsPromises = new Map();
 class MethodNotImplemented extends Error {
@@ -29,8 +35,8 @@ class Suggester {
     constructor(name, options = {}) {
         this.name = name;
         this.options = { ...defaults, ...options };
-        this.status = 'done';
-        this.inputTimer = null;
+        this.status = types_1.SuggesterStatus.DONE;
+        this.inputTimer = undefined;
         this.suggestionsPromises = suggestionsPromises;
     }
     /**

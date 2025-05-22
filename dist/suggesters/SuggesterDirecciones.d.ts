@@ -34,10 +34,10 @@ interface DireccionOptions {
     callesEnMinusculas: boolean;
     ignorarTextoSobrante: boolean;
     normalizadorDirecciones?: new (options: NormalizerOptions) => Normalizador;
-    afterAbort?: () => void;
-    afterRetry?: () => void;
-    afterServerRequest?: () => void;
-    afterServerResponse?: () => void;
+    afterAbort?: (suggesterName: string) => void;
+    afterRetry?: (suggesterName: string) => void;
+    afterServerRequest?: (suggesterName: string) => void;
+    afterServerResponse?: (suggesterName: string) => void;
     onReady?: () => void;
 }
 export declare class SuggesterDirecciones extends Suggester {
