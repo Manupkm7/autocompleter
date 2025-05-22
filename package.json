@@ -1,5 +1,5 @@
 {
-  "name": "@gcba/autocompleter-typescript",
+  "name": "autocompleter-typescript-gcba",
   "version": "1.0.0",
   "description": "Autocompleter para direcciones y lugares de la Ciudad de Buenos Aires",
   "main": "dist/index.js",
